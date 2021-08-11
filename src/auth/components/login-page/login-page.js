@@ -7,8 +7,15 @@ const LoginPage = () => {
 
   const handleSubmit = e => {
     e.preventDefault()
-    setEmailTextValitaion('the email is required')
-    setPasswordTextValitaion('the password is required')
+    const {email, password} = e.target.elements
+
+    if (!email.value) {
+      setEmailTextValitaion('the email is required')
+    }
+
+    if (!password.value) {
+      setPasswordTextValitaion('the password is required')
+    }
   }
 
   return (
