@@ -156,7 +156,7 @@ describe('when the user fills and blur the password input with a value without o
 
 describe('when the user fills and blur the password input with a valid password', () => {
   it(`must not display the validation message`, () => {
-    // get the password input, and set invalid password
+    // get the password input, and set a valid password
     const passwordInput = screen.getByLabelText(/password/i)
 
     const validPassword = '*ReactDev123'
