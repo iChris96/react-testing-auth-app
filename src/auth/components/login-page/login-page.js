@@ -20,8 +20,9 @@ const LoginPage = () => {
   const [emailTextValitaion, setEmailTextValitaion] = useState('')
   const [passwordTextValitaion, setPasswordTextValitaion] = useState('')
   const [formValues, setFormValues] = useState({email: '', password: ''})
+  const [isFetching, setIsFetching] = useState(false)
 
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault()
     const {email, password} = e.target.elements
 
@@ -32,6 +33,12 @@ const LoginPage = () => {
     if (!password.value) {
       setPasswordTextValitaion('the password is required')
     }
+
+    setIsFetching(true)
+
+    await fetch('/login', {method: 'POST'})
+
+    setIsFetching(false)
   }
 
   const handleChange = ({target: {value, name}}) => {
@@ -78,7 +85,9 @@ const LoginPage = () => {
           onBlur={handleBlurPassword}
           value={formValues.password}
         />
-        <Button type="submit">Send</Button>
+        <Button type="submit" disabled={isFetching}>
+          Send
+        </Button>
       </form>
     </>
   )

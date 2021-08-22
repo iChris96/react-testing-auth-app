@@ -1,7 +1,17 @@
 import React from 'react'
-import {screen, render, fireEvent} from '@testing-library/react'
+import {screen, render, fireEvent, waitFor} from '@testing-library/react'
+import {setupServer} from 'msw/node'
+import {handlers} from '../../../mocks/handlers'
 
 import LoginPage from './login-page'
+
+const server = setupServer(...handlers)
+
+beforeAll(() => server.listen())
+
+afterEach(() => server.resetHandlers())
+
+afterAll(() => server.close())
 
 beforeEach(() => render(<LoginPage />))
 
@@ -19,7 +29,7 @@ describe('when login page is mounted', () => {
 })
 
 describe('when the user leaves empty fields and clicks the submit button', () => {
-  it('display required messages as the format: "The [field name] is required"', () => {
+  it('display required messages as the format: "The [field name] is required"', async () => {
     expect(screen.queryByText(/the email is required/i)).not.toBeInTheDocument() // querybytext doesn't brake the text if the element is not founded
     expect(
       screen.queryByText(/the password is required/i),
@@ -31,18 +41,24 @@ describe('when the user leaves empty fields and clicks the submit button', () =>
 
     fireEvent.click(sendBtn)
 
+    // await until data is fetched
+    await waitFor(() => expect(sendBtn).not.toBeDisabled())
+
     expect(screen.getByText(/the email is required/i)).toBeInTheDocument()
     expect(screen.getByText(/the password is required/i)).toBeInTheDocument()
   })
 })
 
 describe('when the user fill the fields and clicks the submit button', () => {
-  it('must not display the required messages', () => {
+  it('must not display the required messages', async () => {
     screen.getByLabelText(/email/i).value = 'h@gmail.com'
     screen.getByLabelText(/password/i).value = 'asda123@!!0'
 
     const sendBtn = screen.getByRole('button', {name: /send/i})
     fireEvent.click(sendBtn)
+
+    // await until data is fetched
+    await waitFor(() => expect(sendBtn).not.toBeDisabled())
 
     expect(screen.queryByText(/the email is required/i)).not.toBeInTheDocument()
     expect(
@@ -172,7 +188,18 @@ describe('when the user fills and blur the password input with a valid password'
 })
 
 describe('when the user submit the login form with valid data', () => {
-  it('must disable the submit button while the form page is fetching the data', () => {})
+  it('must disable the submit button while the form page is fetching the data', async () => {
+    const sendBtn = screen.getByRole('button', {name: /send/i})
+
+    // fill the form
+    // trigger submit
+    fireEvent.click(sendBtn)
+    // submit button should be disabled when the data is being fetched
+    expect(sendBtn).toBeDisabled()
+
+    // submit button should not be disabled after the data was fetched
+    await waitFor(() => expect(sendBtn).not.toBeDisabled())
+  })
 
   it.todo(
     'must be a loading indicator at the top of the form while it is fetching',
