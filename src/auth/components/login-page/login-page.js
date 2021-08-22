@@ -1,4 +1,4 @@
-import {Button, TextField} from '@material-ui/core'
+import {Button, CircularProgress, TextField} from '@material-ui/core'
 import React, {useState} from 'react'
 
 const validateEmail = email => {
@@ -66,6 +66,7 @@ const LoginPage = () => {
   return (
     <>
       <h1>Login Page</h1>
+      {isFetching && <CircularProgress data-testid="loading-indicator" />}
       <form onSubmit={handleSubmit}>
         <TextField
           label="email"

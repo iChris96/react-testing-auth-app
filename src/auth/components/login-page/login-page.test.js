@@ -1,5 +1,12 @@
 import React from 'react'
-import {screen, render, fireEvent, waitFor} from '@testing-library/react'
+import {
+  screen,
+  render,
+  fireEvent,
+  waitFor,
+  waitForElement,
+  waitForElementToBeRemoved,
+} from '@testing-library/react'
 import {setupServer} from 'msw/node'
 import {handlers} from '../../../mocks/handlers'
 
@@ -201,7 +208,22 @@ describe('when the user submit the login form with valid data', () => {
     await waitFor(() => expect(sendBtn).not.toBeDisabled())
   })
 
-  it.todo(
-    'must be a loading indicator at the top of the form while it is fetching',
-  )
+  it('must be a loading indicator at the top of the form while it is fetching', async () => {
+    // get elements
+    const loadingIndicator = () => screen.queryByTestId('loading-indicator')
+    const sendBtn = screen.getByRole('button', {name: /send/i})
+
+    // expect indicator is not visible before data is fetched
+    expect(loadingIndicator()).not.toBeInTheDocument()
+
+    // trigger submit
+    fireEvent.click(sendBtn)
+
+    // expect the indicator is visible when data is being fetched
+    expect(loadingIndicator()).toBeInTheDocument()
+
+    // expect the indicator is not visible after data is fetched
+    await waitForElementToBeRemoved(() => loadingIndicator())
+    expect(loadingIndicator()).not.toBeInTheDocument()
+  })
 })
