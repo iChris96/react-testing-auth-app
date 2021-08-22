@@ -24,13 +24,13 @@ const LoginPage = () => {
 
   const handleSubmit = async e => {
     e.preventDefault()
-    const {email, password} = e.target.elements
+    const {email, password} = formValues
 
-    if (!email.value) {
+    if (!email) {
       setEmailTextValitaion('the email is required')
     }
 
-    if (!password.value) {
+    if (!password) {
       setPasswordTextValitaion('the password is required')
     }
 

@@ -58,8 +58,12 @@ describe('when the user leaves empty fields and clicks the submit button', () =>
 
 describe('when the user fill the fields and clicks the submit button', () => {
   it('must not display the required messages', async () => {
-    screen.getByLabelText(/email/i).value = 'h@gmail.com'
-    screen.getByLabelText(/password/i).value = 'asda123@!!0'
+    fireEvent.change(screen.getByLabelText(/email/i), {
+      target: {value: 'h@gmail.com'},
+    })
+    fireEvent.change(screen.getByLabelText(/password/i), {
+      target: {value: 'asda123@!!0'},
+    })
 
     const sendBtn = screen.getByRole('button', {name: /send/i})
     fireEvent.click(sendBtn)
