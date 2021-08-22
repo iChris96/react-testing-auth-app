@@ -22,6 +22,15 @@ afterAll(() => server.close())
 
 beforeEach(() => render(<LoginPage />))
 
+const fillFormWithValidValues = () => {
+  fireEvent.change(screen.getByLabelText(/email/i), {
+    target: {value: 'h@gmail.com'},
+  })
+  fireEvent.change(screen.getByLabelText(/password/i), {
+    target: {value: 'asda123@!!0'},
+  })
+}
+
 describe('when login page is mounted', () => {
   it('must display the login title', () => {
     const text = screen.getByText(/login page/i)
@@ -58,12 +67,7 @@ describe('when the user leaves empty fields and clicks the submit button', () =>
 
 describe('when the user fill the fields and clicks the submit button', () => {
   it('must not display the required messages', async () => {
-    fireEvent.change(screen.getByLabelText(/email/i), {
-      target: {value: 'h@gmail.com'},
-    })
-    fireEvent.change(screen.getByLabelText(/password/i), {
-      target: {value: 'asda123@!!0'},
-    })
+    fillFormWithValidValues()
 
     const sendBtn = screen.getByRole('button', {name: /send/i})
     fireEvent.click(sendBtn)
@@ -203,6 +207,8 @@ describe('when the user submit the login form with valid data', () => {
     const sendBtn = screen.getByRole('button', {name: /send/i})
 
     // fill the form
+    fillFormWithValidValues()
+
     // trigger submit
     fireEvent.click(sendBtn)
     // submit button should be disabled when the data is being fetched
@@ -216,6 +222,9 @@ describe('when the user submit the login form with valid data', () => {
     // get elements
     const loadingIndicator = () => screen.queryByTestId('loading-indicator')
     const sendBtn = screen.getByRole('button', {name: /send/i})
+
+    // fill the form
+    fillFormWithValidValues()
 
     // expect indicator is not visible before data is fetched
     expect(loadingIndicator()).not.toBeInTheDocument()

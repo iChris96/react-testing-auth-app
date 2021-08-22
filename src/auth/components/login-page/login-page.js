@@ -26,13 +26,18 @@ const LoginPage = () => {
     e.preventDefault()
     const {email, password} = formValues
 
-    if (!email) {
+    const isEmailEmpty = !email
+    const isPasswordEmpty = !password
+
+    if (isEmailEmpty) {
       setEmailTextValitaion('the email is required')
     }
 
-    if (!password) {
+    if (isPasswordEmpty) {
       setPasswordTextValitaion('the password is required')
     }
+
+    if (isEmailEmpty || isPasswordEmpty) return
 
     setIsFetching(true)
 
