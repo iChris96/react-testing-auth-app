@@ -16,14 +16,15 @@ const validatePassword = password => {
 const invalidPasswordMsg =
   'The password must contain at least 8 characters, one upper case letter, one number and one special character'
 
+const login = () => fetch('/login', {method: 'POST'})
+
 const LoginPage = () => {
   const [emailTextValitaion, setEmailTextValitaion] = useState('')
   const [passwordTextValitaion, setPasswordTextValitaion] = useState('')
   const [formValues, setFormValues] = useState({email: '', password: ''})
   const [isFetching, setIsFetching] = useState(false)
 
-  const handleSubmit = async e => {
-    e.preventDefault()
+  const validateForm = () => {
     const {email, password} = formValues
 
     const isEmailEmpty = !email
@@ -37,11 +38,17 @@ const LoginPage = () => {
       setPasswordTextValitaion('the password is required')
     }
 
-    if (isEmailEmpty || isPasswordEmpty) return
+    return isEmailEmpty || isPasswordEmpty
+  }
+
+  const handleSubmit = async e => {
+    e.preventDefault()
+
+    if (validateForm()) return
 
     setIsFetching(true)
 
-    await fetch('/login', {method: 'POST'})
+    await login()
 
     setIsFetching(false)
   }
