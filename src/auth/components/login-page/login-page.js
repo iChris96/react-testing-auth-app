@@ -1,4 +1,4 @@
-import {Button, CircularProgress, TextField} from '@material-ui/core'
+import {Button, CircularProgress, Snackbar, TextField} from '@material-ui/core'
 import React, {useState} from 'react'
 
 const validateEmail = email => {
@@ -23,6 +23,8 @@ const LoginPage = () => {
   const [passwordTextValitaion, setPasswordTextValitaion] = useState('')
   const [formValues, setFormValues] = useState({email: '', password: ''})
   const [isFetching, setIsFetching] = useState(false)
+  const [isSnackOpen, setIsSnackOpen] = useState(false)
+  const [snackMessage, setSnackMessage] = useState('')
 
   const validateForm = () => {
     const {email, password} = formValues
@@ -46,11 +48,19 @@ const LoginPage = () => {
 
     if (validateForm()) return
 
-    setIsFetching(true)
+    try {
+      setIsFetching(true)
 
-    await login()
+      const response = await login()
 
-    setIsFetching(false)
+      if (!response.ok) throw response
+    } catch (err) {
+      const data = await err.json()
+      setSnackMessage(data.message)
+      setIsSnackOpen(true)
+    } finally {
+      setIsFetching(false)
+    }
   }
 
   const handleChange = ({target: {value, name}}) => {
@@ -102,6 +112,16 @@ const LoginPage = () => {
           Send
         </Button>
       </form>
+      <Snackbar
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        open={isSnackOpen}
+        autoHideDuration={6000}
+        onClose={() => setIsSnackOpen(false)}
+        message={snackMessage}
+      />
     </>
   )
 }
