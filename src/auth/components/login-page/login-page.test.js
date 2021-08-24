@@ -22,12 +22,15 @@ afterAll(() => server.close())
 
 beforeEach(() => render(<LoginPage />))
 
-const fillFormWithValidValues = () => {
+const fillFormInputs = ({
+  email = 'h@gmail.com',
+  password = 'asda123@!!0',
+} = {}) => {
   fireEvent.change(screen.getByLabelText(/email/i), {
-    target: {value: 'h@gmail.com'},
+    target: {value: email},
   })
   fireEvent.change(screen.getByLabelText(/password/i), {
-    target: {value: 'asda123@!!0'},
+    target: {value: password},
   })
 }
 
@@ -67,7 +70,7 @@ describe('when the user leaves empty fields and clicks the submit button', () =>
 
 describe('when the user fill the fields and clicks the submit button', () => {
   it('must not display the required messages', async () => {
-    fillFormWithValidValues()
+    fillFormInputs()
 
     const sendBtn = screen.getByRole('button', {name: /send/i})
     fireEvent.click(sendBtn)
@@ -207,7 +210,7 @@ describe('when the user submit the login form with valid data', () => {
     const sendBtn = screen.getByRole('button', {name: /send/i})
 
     // fill the form
-    fillFormWithValidValues()
+    fillFormInputs()
 
     // trigger submit
     fireEvent.click(sendBtn)
@@ -224,7 +227,7 @@ describe('when the user submit the login form with valid data', () => {
     const sendBtn = screen.getByRole('button', {name: /send/i})
 
     // fill the form
-    fillFormWithValidValues()
+    fillFormInputs()
 
     // expect indicator is not visible before data is fetched
     expect(loadingIndicator()).not.toBeInTheDocument()
@@ -255,7 +258,7 @@ describe('when the user submit the login form with valid data and there is an un
 
     // trigger submit form
     const sendBtn = screen.getByRole('button', {name: /send/i})
-    fillFormWithValidValues()
+    fillFormInputs()
     fireEvent.click(sendBtn)
 
     // expect message error on screen
@@ -266,7 +269,38 @@ describe('when the user submit the login form with valid data and there is an un
 })
 
 describe('when the user submit the login form with valid data and there is an invalid credential error', () => {
-  it.todo(
-    'must display the error message "The email or password are not correct" from the api',
-  )
+  it('must display the error message "The email or password are not correct" from the api', async () => {
+    const invalidEmail = 'wrong@email.com'
+    const invalidPassword = 'invalidpass'
+
+    // setup server
+    server.use(
+      rest.post('/login', (req, res, ctx) => {
+        const {email, password} = req.body
+
+        if (email === invalidEmail && password === invalidPassword) {
+          return res(
+            ctx.status(401),
+            ctx.json({
+              message: 'The email or password are not correct" from the api',
+            }),
+          )
+        }
+
+        return res(ctx.status(200))
+      }),
+    )
+
+    // trigger submit form
+    const sendBtn = screen.getByRole('button', {name: /send/i})
+    fillFormInputs({email: invalidEmail, password: invalidPassword})
+    fireEvent.click(sendBtn)
+
+    // expect error message
+    expect(
+      await screen.findByText(
+        /the email or password are not correct" from the api/i,
+      ),
+    ).toBeInTheDocument()
+  })
 })

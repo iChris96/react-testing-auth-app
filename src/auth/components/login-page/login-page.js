@@ -16,7 +16,12 @@ const validatePassword = password => {
 const invalidPasswordMsg =
   'The password must contain at least 8 characters, one upper case letter, one number and one special character'
 
-const login = () => fetch('/login', {method: 'POST'})
+const login = ({email, password}) =>
+  fetch('/login', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json '},
+    body: JSON.stringify({email, password}),
+  })
 
 const LoginPage = () => {
   const [emailTextValitaion, setEmailTextValitaion] = useState('')
@@ -51,7 +56,9 @@ const LoginPage = () => {
     try {
       setIsFetching(true)
 
-      const response = await login()
+      const {email, password} = formValues
+
+      const response = await login({email, password})
 
       if (!response.ok) throw response
     } catch (err) {
