@@ -12,6 +12,10 @@ const EmployeePage = () => <h1>Employee Page</h1>
 
 const isAuth = false
 
+const PrivateRoute = ({children, path}) => (
+  <Route path={path}>{isAuth ? {children} : <Redirect to="/" />}</Route>
+)
+
 export const AppRouter = () => (
   <Router>
     <div>
@@ -20,13 +24,13 @@ export const AppRouter = () => (
           <LoginPage />
         </Route>
 
-        <Route path="/admin">
-          {isAuth ? <AdminPage /> : <Redirect to="/" />}
-        </Route>
+        <PrivateRoute path="/admin">
+          <AdminPage />
+        </PrivateRoute>
 
-        <Route path="/employee">
-          {isAuth ? <EmployeePage /> : <Redirect to="/" />}
-        </Route>
+        <PrivateRoute path="/employee">
+          <EmployeePage />
+        </PrivateRoute>
       </Switch>
     </div>
   </Router>

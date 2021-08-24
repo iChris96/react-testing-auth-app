@@ -4,17 +4,14 @@ import {BrowserRouter as Router} from 'react-router-dom'
 
 import {AppRouter} from './app-router'
 
-// beforeEach(() => render(<AppRouter />))
+const renderWithRouter = (ui, {route = '/'} = {}) => {
+  window.history.pushState({}, '', route)
+  return render(ui, {wrapper: Router})
+}
 
 describe('when the user is not authenticated and enters to admin page', () => {
   it('must be redirected to login page', () => {
-    window.history.pushState({}, '', '/admin')
-
-    render(
-      <Router>
-        <AppRouter />
-      </Router>,
-    )
+    renderWithRouter(<AppRouter />, {route: '/admin'})
 
     expect(screen.getByText(/login page/i)).toBeInTheDocument()
   })
@@ -22,13 +19,7 @@ describe('when the user is not authenticated and enters to admin page', () => {
 
 describe('when the user is not authenticated and enters on employee page', () => {
   it('must be redirected to login page', () => {
-    window.history.pushState({}, '', '/employee')
-
-    render(
-      <Router>
-        <AppRouter />
-      </Router>,
-    )
+    renderWithRouter(<AppRouter />, {route: '/employee'})
 
     expect(screen.getByText(/login page/i)).toBeInTheDocument()
   })
