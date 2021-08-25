@@ -7,8 +7,8 @@ import {
 } from 'react-router-dom'
 import LoginPage from '../login-page/login-page'
 import AuthContext from '../../../ultils/contexts/auth-context'
+import AdminPage from '../admin-page/admin-page'
 
-const AdminPage = () => <h1>Admin Page</h1>
 const EmployeePage = () => <h1>Employee Page</h1>
 
 const PrivateRoute = ({children, path}) => {
