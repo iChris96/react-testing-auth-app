@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useContext} from 'react'
 import {
   BrowserRouter as Router,
   Switch,
@@ -6,31 +6,35 @@ import {
   Redirect,
 } from 'react-router-dom'
 import LoginPage from '../login-page/login-page'
+import AuthContext from '../../../ultils/contexts/auth-context'
 
 const AdminPage = () => <h1>Admin Page</h1>
 const EmployeePage = () => <h1>Employee Page</h1>
 
-const PrivateRoute = ({children, path, isAuth}) => (
-  <Route path={path}>{isAuth ? children : <Redirect to="/" />}</Route>
-)
+const PrivateRoute = ({children, path}) => {
+  const {isAuthenticated} = useContext(AuthContext)
+  return (
+    <Route path={path}>
+      {isAuthenticated ? children : <Redirect to="/" />}
+    </Route>
+  )
+}
 
-export const AppRouter = ({isAuth}) => (
+export const AppRouter = () => (
   <Router>
-    <div>
-      <Switch>
-        <Route path="/" exact>
-          <LoginPage />
-        </Route>
+    <Switch>
+      <Route path="/" exact>
+        <LoginPage />
+      </Route>
 
-        <PrivateRoute path="/admin" isAuth={isAuth}>
-          <AdminPage />
-        </PrivateRoute>
+      <PrivateRoute path="/admin">
+        <AdminPage />
+      </PrivateRoute>
 
-        <PrivateRoute path="/employee" isAuth={isAuth}>
-          <EmployeePage />
-        </PrivateRoute>
-      </Switch>
-    </div>
+      <PrivateRoute path="/employee">
+        <EmployeePage />
+      </PrivateRoute>
+    </Switch>
   </Router>
 )
 

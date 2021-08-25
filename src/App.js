@@ -1,11 +1,11 @@
-import {BrowserRouter as Router} from 'react-router-dom'
 import {AppRouter} from './auth/components/app-router/app-router'
+import AuthGuard from './auth/components/auth-guard'
 
 function App() {
   return (
-    <Router>
+    <AuthGuard>
       <AppRouter />
-    </Router>
+    </AuthGuard>
   )
 }
 

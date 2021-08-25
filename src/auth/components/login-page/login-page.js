@@ -10,7 +10,9 @@ import {
 } from '@material-ui/core'
 import {makeStyles} from '@material-ui/core/styles'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
-import React, {useState} from 'react'
+import React, {useState, useContext} from 'react'
+import {Redirect} from 'react-router-dom'
+import AuthContext from '../../../ultils/contexts/auth-context'
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -62,6 +64,8 @@ const LoginPage = () => {
   const [isFetching, setIsFetching] = useState(false)
   const [isSnackOpen, setIsSnackOpen] = useState(false)
   const [snackMessage, setSnackMessage] = useState('')
+  const [user, setUser] = useState({role: ''})
+  const {handleSuccessAuth} = useContext(AuthContext)
 
   const validateForm = () => {
     const {email, password} = formValues
@@ -93,6 +97,15 @@ const LoginPage = () => {
       const response = await login({email, password})
 
       if (!response.ok) throw response
+
+      const data = await response.json()
+
+      const {
+        user: {role},
+      } = data
+
+      setUser({role})
+      handleSuccessAuth()
     } catch (err) {
       const data = await err.json()
       setSnackMessage(data.message)
@@ -122,6 +135,10 @@ const LoginPage = () => {
     }
 
     setPasswordTextValitaion('')
+  }
+
+  if (!isFetching && user.role === 'admin') {
+    return <Redirect to="/admin" />
   }
 
   return (

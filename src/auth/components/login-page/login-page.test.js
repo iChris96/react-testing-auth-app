@@ -1,7 +1,6 @@
 import React from 'react'
 import {
   screen,
-  render,
   fireEvent,
   waitFor,
   waitForElementToBeRemoved,
@@ -9,8 +8,9 @@ import {
 import {setupServer} from 'msw/node'
 import {rest} from 'msw'
 import {handlers} from '../../../mocks/handlers'
-
 import LoginPage from './login-page'
+import AuthContext from '../../../ultils/contexts/auth-context'
+import {fillFormInputs, renderWithRouter} from '../../../ultils/tests'
 
 const server = setupServer(...handlers)
 
@@ -20,19 +20,13 @@ afterEach(() => server.resetHandlers())
 
 afterAll(() => server.close())
 
-beforeEach(() => render(<LoginPage />))
-
-const fillFormInputs = ({
-  email = 'h@gmail.com',
-  password = 'asda123@!!0',
-} = {}) => {
-  fireEvent.change(screen.getByLabelText(/email/i), {
-    target: {value: email},
-  })
-  fireEvent.change(screen.getByLabelText(/password/i), {
-    target: {value: password},
-  })
-}
+beforeEach(() =>
+  renderWithRouter(
+    <AuthContext.Provider value={{handleSuccessAuth: jest.fn()}}>
+      <LoginPage />
+    </AuthContext.Provider>,
+  ),
+)
 
 describe('when login page is mounted', () => {
   it('must display the login title', () => {
