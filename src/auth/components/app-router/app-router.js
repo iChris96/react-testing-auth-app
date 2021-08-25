@@ -10,13 +10,11 @@ import LoginPage from '../login-page/login-page'
 const AdminPage = () => <h1>Admin Page</h1>
 const EmployeePage = () => <h1>Employee Page</h1>
 
-const isAuth = false
-
-const PrivateRoute = ({children, path}) => (
-  <Route path={path}>{isAuth ? {children} : <Redirect to="/" />}</Route>
+const PrivateRoute = ({children, path, isAuth}) => (
+  <Route path={path}>{isAuth ? children : <Redirect to="/" />}</Route>
 )
 
-export const AppRouter = () => (
+export const AppRouter = ({isAuth}) => (
   <Router>
     <div>
       <Switch>
@@ -24,11 +22,11 @@ export const AppRouter = () => (
           <LoginPage />
         </Route>
 
-        <PrivateRoute path="/admin">
+        <PrivateRoute path="/admin" isAuth={isAuth}>
           <AdminPage />
         </PrivateRoute>
 
-        <PrivateRoute path="/employee">
+        <PrivateRoute path="/employee" isAuth={isAuth}>
           <EmployeePage />
         </PrivateRoute>
       </Switch>
