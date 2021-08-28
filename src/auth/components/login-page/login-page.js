@@ -64,8 +64,7 @@ const LoginPage = () => {
   const [isFetching, setIsFetching] = useState(false)
   const [isSnackOpen, setIsSnackOpen] = useState(false)
   const [snackMessage, setSnackMessage] = useState('')
-  const [user, setUser] = useState({role: ''})
-  const {handleSuccessAuth} = useContext(AuthContext)
+  const {handleSuccessAuth, user} = useContext(AuthContext)
 
   const validateForm = () => {
     const {email, password} = formValues
@@ -101,11 +100,10 @@ const LoginPage = () => {
       const data = await response.json()
 
       const {
-        user: {role},
+        user: {role, name},
       } = data
 
-      setUser({role})
-      handleSuccessAuth()
+      handleSuccessAuth({role, name})
     } catch (err) {
       const data = await err.json()
       setSnackMessage(data.message)

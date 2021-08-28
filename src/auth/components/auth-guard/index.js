@@ -3,10 +3,18 @@ import AuthContext from '../../../ultils/contexts/auth-context'
 
 const AuthGuard = ({children, isAuth}) => {
   const [isAuthenticated, setIsAuthenticated] = useState(isAuth)
+  const [user, setUser] = useState({
+    role: '',
+    name: '',
+  })
 
   const authContextValue = {
-    handleSuccessAuth: () => setIsAuthenticated(true),
+    handleSuccessAuth: ({role, name}) => {
+      setUser({role, name})
+      setIsAuthenticated(true)
+    },
     isAuthenticated,
+    user,
   }
 
   return (

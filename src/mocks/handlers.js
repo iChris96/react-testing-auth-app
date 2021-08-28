@@ -8,7 +8,7 @@ export const handlers = [
     let role = ''
     if (email === 'admin@gmail.com') role = 'admin'
 
-    return res(ctx.status(200), ctx.json({user: {role}}))
+    return res(ctx.status(200), ctx.json({user: {role, name: 'John Doe'}}))
   }),
 ]
 
