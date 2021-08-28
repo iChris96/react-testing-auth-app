@@ -29,4 +29,10 @@ describe('when the employee access to employee page', () => {
       screen.queryByRole('button', {name: /delete/i}),
     ).not.toBeInTheDocument()
   })
+
+  it('employee name should be displayed in the common navbar', () => {
+    renderWith({role: 'employee', name: 'Joana Doe'})
+
+    expect(screen.getByText(/joana doe/i)).toBeInTheDocument()
+  })
 })
