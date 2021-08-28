@@ -7,6 +7,7 @@ export const handlers = [
     const {email} = req.body
     let role = ''
     if (email === 'admin@gmail.com') role = 'admin'
+    if (email === 'employee@gmail.com') role = 'employee'
 
     return res(ctx.status(200), ctx.json({user: {role, name: 'John Doe'}}))
   }),

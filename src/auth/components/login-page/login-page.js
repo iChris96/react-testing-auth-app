@@ -139,6 +139,10 @@ const LoginPage = () => {
     return <Redirect to="/admin" />
   }
 
+  if (!isFetching && user.role === 'employee') {
+    return <Redirect to="/employee" />
+  }
+
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />

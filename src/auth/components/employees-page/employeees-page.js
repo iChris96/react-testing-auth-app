@@ -6,11 +6,11 @@ const EmployeePage = () => {
   const {user} = useContext(AuthContext)
   return (
     <>
-      {user.role === 'admin' && <Button color="inherit">Delete</Button>}
-
       <Typography component="h1" variant="h5">
         Employees page
       </Typography>
+
+      {user.role === 'admin' && <Button color="inherit">Delete</Button>}
     </>
   )
 }
