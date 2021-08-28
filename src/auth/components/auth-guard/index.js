@@ -1,10 +1,10 @@
 import React, {useState} from 'react'
 import AuthContext from '../../../ultils/contexts/auth-context'
 
-const AuthGuard = ({children, isAuth}) => {
+const AuthGuard = ({children, isAuth, initialRole}) => {
   const [isAuthenticated, setIsAuthenticated] = useState(isAuth)
   const [user, setUser] = useState({
-    role: '',
+    role: initialRole,
     name: '',
   })
 

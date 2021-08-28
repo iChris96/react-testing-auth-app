@@ -1,6 +1,7 @@
-import {fireEvent, screen} from '@testing-library/react'
-import {setupServer} from 'msw/node'
 import React from 'react'
+import {fireEvent, screen, render} from '@testing-library/react'
+import {setupServer} from 'msw/node'
+import {BrowserRouter as Router} from 'react-router-dom'
 import {handlers} from '../../../mocks/handlers'
 import {fillFormInputs, renderWithRouter} from '../../../ultils/tests'
 import AuthGuard from '../auth-guard'
@@ -40,10 +41,10 @@ describe('when the user is not authenticated and enters on employee page', () =>
   })
 })
 
-describe('when the user is authenticated and enters on admin page', () => {
+describe('when admin is authenticated and enters on admin page', () => {
   it('must have access to admin page', () => {
     renderWithRouter(
-      <AuthGuard isAuth>
+      <AuthGuard isAuth initialRole="admin">
         <AppRouter />
       </AuthGuard>,
       {route: '/admin'},
@@ -79,7 +80,7 @@ describe('when the admin goes to employees page', () => {
   it('must have access', async () => {
     // go to admin page
     renderWithRouter(
-      <AuthGuard isAuth>
+      <AuthGuard isAuth initialRole="admin">
         <AppRouter />
       </AuthGuard>,
       {route: '/admin'},
@@ -113,5 +114,21 @@ describe('when the employee is authenticated in login page', () => {
 
     // expect admin page
     expect(await screen.findByText(/employees page/i)).toBeInTheDocument()
+  })
+})
+
+describe('when the employee navigate to admin page', () => {
+  it('must be redirected to employee page', async () => {
+    window.history.pushState({}, '', '/admin')
+
+    render(
+      <Router>
+        <AuthGuard isAuth initialRole="employee">
+          <AppRouter />
+        </AuthGuard>
+      </Router>,
+    )
+
+    expect(screen.getByText(/employees page/i)).toBeInTheDocument()
   })
 })

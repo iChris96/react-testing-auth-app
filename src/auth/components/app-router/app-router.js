@@ -10,14 +10,22 @@ import AuthContext from '../../../ultils/contexts/auth-context'
 import AdminPage from '../admin-page/admin-page'
 import EmployeePage from '../employees-page/employeees-page'
 
-const PrivateRoute = ({children, path}) => {
-  const {isAuthenticated} = useContext(AuthContext)
+const PrivateRoute = ({children, path, allowRoles = []}) => {
+  const {
+    isAuthenticated,
+    user: {role},
+  } = useContext(AuthContext)
   // console.log('trying to go: ', path)
   // console.log('have auth: ', isAuthenticated)
 
+  const getIsAllowed = () => {
+    if (allowRoles.length) return allowRoles.includes(role)
+    return true
+  }
+
   return (
     <Route path={path}>
-      {isAuthenticated ? children : <Redirect to="/" />}
+      {isAuthenticated && getIsAllowed() ? children : <Redirect to="/" />}
     </Route>
   )
 }
@@ -29,7 +37,7 @@ export const AppRouter = () => (
         <LoginPage />
       </Route>
 
-      <PrivateRoute path="/admin">
+      <PrivateRoute path="/admin" allowRoles={['admin']}>
         <AdminPage />
       </PrivateRoute>
 
