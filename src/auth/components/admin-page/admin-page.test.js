@@ -1,12 +1,15 @@
 import {screen, render} from '@testing-library/react'
+import {BrowserRouter as Router} from 'react-router-dom'
 import AuthContext from '../../../ultils/contexts/auth-context'
 import AdminPage from './admin-page'
 
 beforeEach(() =>
   render(
-    <AuthContext.Provider value={{user: {name: 'John Doe'}}}>
-      <AdminPage />{' '}
-    </AuthContext.Provider>,
+    <Router>
+      <AuthContext.Provider value={{user: {name: 'John Doe'}}}>
+        <AdminPage />{' '}
+      </AuthContext.Provider>
+    </Router>,
   ),
 )
 

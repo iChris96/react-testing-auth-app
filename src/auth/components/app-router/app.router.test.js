@@ -74,3 +74,23 @@ describe('when the admin is authenticated in login page', () => {
     expect(await screen.findByText(/john doe/i)).toBeInTheDocument()
   })
 })
+
+describe('when the admin goes to employees page', () => {
+  it('must have access', async () => {
+    // go to admin page
+    renderWithRouter(
+      <AuthGuard isAuth>
+        <AppRouter />
+      </AuthGuard>,
+      {route: '/admin'},
+    )
+
+    expect(await screen.findByText(/admin page/i)).toBeInTheDocument()
+
+    // click employees button
+    fireEvent.click(screen.getByText(/employees/i))
+
+    // expect be redirected to employees page
+    expect(screen.getByText(/employees page/i)).toBeInTheDocument()
+  })
+})
